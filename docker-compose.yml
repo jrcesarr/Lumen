@@ -1,0 +1,51 @@
+# Ambiente local completo: docker compose up
+# (Auth fica no Supabase; para rodar o Auth local, use `supabase start`.)
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lumen
+    ports: ["5432:5432"]
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./infra/dev-roles.sql:/docker-entrypoint-initdb.d/01-roles.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+      retries: 20
+
+  migrate:
+    build: ./backend
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      MIGRATION_DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/lumen
+    command: uv run --no-dev alembic upgrade head
+
+  api:
+    build: ./backend
+    depends_on: { migrate: { condition: service_completed_successfully } }
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+asyncpg://app_backend:app_backend@db:5432/lumen
+    ports: ["8000:8000"]
+
+  web:
+    image: node:22
+    working_dir: /web
+    volumes: [./frontend:/web]
+    command: sh -c "npm ci && npm run dev -- --host"
+    ports: ["5173:5173"]
+
+  # Armazenamento de arquivos (fotos de chamados, comprovantes) compativel com S3.
+  minio:
+    image: minio/minio
+    command: server /data --console-address :9001
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [minio:/data]
+
+volumes:
+  db:
+  minio:
