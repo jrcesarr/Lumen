@@ -7,6 +7,7 @@ from app.carteira.router import router as carteira_router
 from app.core.config import get_settings
 from app.core.logging import configurar_logging
 from app.identidade.router import router as identidade_router
+from app.reservas.router import router as reservas_router
 from app.shared.errors import registrar_handlers
 from app.shared.middleware import RequestIdMiddleware
 
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
 
     app.include_router(identidade_router, prefix=API_V1)
     app.include_router(carteira_router, prefix=API_V1)
+    app.include_router(reservas_router, prefix=API_V1)
     return app
 
 

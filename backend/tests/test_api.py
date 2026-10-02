@@ -1,15 +1,4 @@
-import pytest
-from httpx import ASGITransport, AsyncClient
-
 from tests.factories import criar_cenario, headers, token
-
-
-@pytest.fixture
-async def client(engine):
-    from app.main import app
-
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://teste") as c:
-        yield c
 
 
 async def test_health(client):
