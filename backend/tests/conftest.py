@@ -42,7 +42,15 @@ os.environ["DATABASE_URL"] = TEST_APP_URL.replace("postgresql://", "postgresql+a
 os.environ["SUPABASE_JWT_SECRET"] = JWT_SECRET
 os.environ["SUPABASE_URL"] = "http://supabase.teste"
 
-TABELAS = ["vinculos", "areas_comuns", "unidades", "usuarios", "condominios", "auditoria"]
+TABELAS = [
+    "reservas",
+    "vinculos",
+    "areas_comuns",
+    "unidades",
+    "usuarios",
+    "condominios",
+    "auditoria",
+]
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -83,3 +91,13 @@ async def engine():
 
     yield get_engine()
     await get_engine().dispose()
+
+
+@pytest.fixture
+async def client(engine):
+    from httpx import ASGITransport, AsyncClient
+
+    from app.main import app
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://teste") as c:
+        yield c

@@ -10,7 +10,7 @@ backend/    API em FastAPI, um pacote por contexto (DDD)
   app/shared/      banco, contexto da requisicao (RLS), erros, middleware
   app/identidade/  usuarios e vinculos            (pronto)
   app/carteira/    condominios, unidades, areas   (pronto)
-  app/reservas/    reservas de areas comuns       (proximo PR)
+  app/reservas/    reservas de areas comuns       (pronto)
   app/chamados, portaria, comunicacao, financeiro, inteligencia, jobs
   alembic/         migrations em SQL explicito
 frontend/   React + Vite + TypeScript, uma area por perfil

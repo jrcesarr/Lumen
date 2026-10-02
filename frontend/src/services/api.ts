@@ -48,3 +48,14 @@ export type Vinculo = {
 }
 export type Me = { id: string; nome: string; email: string; vinculos: Vinculo[] }
 export type AreaComum = { id: string; nome: string; capacidade: number | null; exige_aprovacao: boolean }
+
+export type StatusReserva = 'pendente' | 'aprovada' | 'recusada' | 'cancelada'
+export type Reserva = {
+  id: string
+  area_id: string
+  unidade_id: string
+  inicio: string
+  fim: string
+  status: StatusReserva
+  motivo_recusa: string | null
+}

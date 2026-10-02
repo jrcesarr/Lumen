@@ -1,10 +1,12 @@
 """Conexao com o banco. A API usa o usuario app_backend, que NAO ignora a RLS."""
 
 from collections.abc import AsyncGenerator
+from datetime import datetime
 from functools import lru_cache
 from typing import Annotated
 
 from fastapi import Depends
+from sqlalchemy import DateTime
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
@@ -12,7 +14,9 @@ from app.core.config import get_settings
 
 
 class Base(DeclarativeBase):
-    pass
+    # Toda data do sistema e timestamptz (com fuso). Sem isso, o SQLAlchemy mapearia
+    # datetime para "timestamp without time zone" e as comparacoes dariam erro.
+    type_annotation_map = {datetime: DateTime(timezone=True)}
 
 
 @lru_cache

@@ -22,10 +22,12 @@ class Cenario:
     morador_b: UUID
     multi: UUID  # morador no A102 e sindico do B
     sem_vinculo: UUID
+    area_a: UUID  # Churrasqueira do A (exige aprovacao, 24h de antecedencia, max 6h)
+    area_b: UUID
 
 
 def criar_cenario(admin) -> Cenario:
-    c = Cenario(*(uuid7() for _ in range(10)))
+    c = Cenario(*(uuid7() for _ in range(12)))
     admin.execute(
         "INSERT INTO condominios (id, nome, cnpj) VALUES (%s, 'Residencial Aurora', '111'),"
         " (%s, 'Edificio Boreal', '222')",
@@ -60,12 +62,9 @@ def criar_cenario(admin) -> Cenario:
             (uuid7(), usuario, cond, unidade, papel),
         )
     admin.execute(
-        "INSERT INTO areas_comuns (id, condominio_id, nome) VALUES (%s, %s, 'Churrasqueira')",
-        (uuid7(), c.cond_a),
-    )
-    admin.execute(
-        "INSERT INTO areas_comuns (id, condominio_id, nome) VALUES (%s, %s, 'Salao')",
-        (uuid7(), c.cond_b),
+        "INSERT INTO areas_comuns (id, condominio_id, nome) VALUES"
+        " (%s, %s, 'Churrasqueira'), (%s, %s, 'Salao')",
+        (c.area_a, c.cond_a, c.area_b, c.cond_b),
     )
     admin.execute("TRUNCATE auditoria")  # o seed nao interessa aos testes de auditoria
     return c

@@ -44,6 +44,12 @@ class ConflitoError(AppError):
     status_code = 409
 
 
+class RegraDeNegocioError(AppError):
+    """O pedido e valido no formato, mas quebra uma regra do negocio."""
+
+    status_code = 422
+
+
 def _request_id(request: Request) -> str | None:
     return getattr(request.state, "request_id", None)
 
