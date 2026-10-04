@@ -7,9 +7,9 @@
 | Parte | Onde | Por quê |
 |---|---|---|
 | Front (React PWA) | Servido pelo nginx da VM | Build estático; um servidor a menos |
-| API FastAPI e worker | VM Linux na Oracle Cloud, região São Paulo, com Docker Compose | Mesmo modelo de infra da SmartFit; um deploy só |
+| API FastAPI e worker | VM Oracle Always Free, região São Paulo, conta Pay As You Go, Docker Compose | Custo zero sem o desligamento por ociosidade da conta só gratuita; mesmo modelo da SmartFit |
 | MinIO (arquivos) | Mesma VM | Fotos, NFs e regimentos; acesso por link assinado |
-| PostgreSQL e Auth | Supabase, região São Paulo, plano pago | Dados no Brasil (LGPD), backup gerenciado, login pronto |
+| PostgreSQL e Auth | Supabase Free, região São Paulo | Dados no Brasil (LGPD) e login pronto. Sem backup no Free: `pg_dump` diário no Object Storage da Oracle. Pro (US$ 25/mês) ao passar de 400 MB ou na fase 2 |
 | WhatsApp, Asaas, LLM | SaaS externos | Chamados só pela API ou pelo worker, nunca pelo front |
 
 O fluxo de cada funcionalidade (telas e endpoints) está em [fluxos-de-dados.md](fluxos-de-dados.md).
