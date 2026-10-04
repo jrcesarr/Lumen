@@ -1,5 +1,19 @@
 # Arquitetura
 
+![Diagrama da arquitetura](diagramas/arquitetura.svg)
+
+## Onde cada parte roda
+
+| Parte | Onde | Por quê |
+|---|---|---|
+| Front (React PWA) | Servido pelo nginx da VM | Build estático; um servidor a menos |
+| API FastAPI e worker | VM Linux na Oracle Cloud, região São Paulo, com Docker Compose | Mesmo modelo de infra da SmartFit; um deploy só |
+| MinIO (arquivos) | Mesma VM | Fotos, NFs e regimentos; acesso por link assinado |
+| PostgreSQL e Auth | Supabase, região São Paulo, plano pago | Dados no Brasil (LGPD), backup gerenciado, login pronto |
+| WhatsApp, Asaas, LLM | SaaS externos | Chamados só pela API ou pelo worker, nunca pelo front |
+
+O fluxo de cada funcionalidade (telas e endpoints) está em [fluxos-de-dados.md](fluxos-de-dados.md).
+
 ## Uma requisicao, do clique ao banco
 
 1. O front faz login no **Supabase Auth** e recebe um JWT.
