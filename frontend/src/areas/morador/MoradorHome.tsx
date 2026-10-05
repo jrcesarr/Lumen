@@ -19,10 +19,12 @@ export function MoradorHome() {
       <ul>
         {reservas.map((r) => (
           <li key={r.id}>
-            {nomeDaArea(r.area_id)}, {periodo(r)}: <strong>{r.status}</strong>
+            {nomeDaArea(r.area_id)}, {periodo(r)}: <strong className={`status status-${r.status}`}>{r.status}</strong>
             {r.motivo_recusa && <> ({r.motivo_recusa})</>}
             {(r.status === 'pendente' || r.status === 'aprovada') && (
-              <button onClick={() => cancelar.mutate(r.id)}>Cancelar</button>
+              <button className="perigo" onClick={() => cancelar.mutate(r.id)}>
+                Cancelar
+              </button>
             )}
           </li>
         ))}

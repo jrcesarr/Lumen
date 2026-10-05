@@ -19,19 +19,28 @@ function Inicio() {
   return <Navigate to="/morador" replace />
 }
 
-function AreaLogada() {
+function AreaLogada({ email }: { email?: string }) {
   return (
     <CondominioProvider>
-      <header>
-        <SeletorCondominio />
+      <header className="topo">
+        <div className="topo-conteudo">
+          <span className="marca">Lumen</span>
+          <SeletorCondominio />
+          {email && <span className="usuario">{email}</span>}
+          <button type="button" className="secundario" onClick={() => supabase.auth.signOut()}>
+            Sair
+          </button>
+        </div>
       </header>
-      <Routes>
-        <Route path="/" element={<Inicio />} />
-        <Route path="/morador/*" element={<MoradorHome />} />
-        <Route path="/sindico/*" element={<SindicoHome />} />
-        <Route path="/portaria/*" element={<PortariaHome />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <main className="conteudo">
+        <Routes>
+          <Route path="/" element={<Inicio />} />
+          <Route path="/morador/*" element={<MoradorHome />} />
+          <Route path="/sindico/*" element={<SindicoHome />} />
+          <Route path="/portaria/*" element={<PortariaHome />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
     </CondominioProvider>
   )
 }
@@ -45,5 +54,5 @@ export default function App() {
     return () => data.subscription.unsubscribe()
   }, [])
 
-  return <BrowserRouter>{sessao ? <AreaLogada /> : <Login />}</BrowserRouter>
+  return <BrowserRouter>{sessao ? <AreaLogada email={sessao.user.email} /> : <Login />}</BrowserRouter>
 }

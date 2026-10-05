@@ -13,12 +13,14 @@ export function Login() {
   }
 
   return (
-    <form onSubmit={entrar}>
-      <h1>Lumen</h1>
-      <input placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input placeholder="Senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
-      <button type="submit">Entrar</button>
-      {erro && <p role="alert">{erro}</p>}
-    </form>
+    <main className="login">
+      <form onSubmit={entrar}>
+        <h1>Lumen</h1>
+        <input placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input placeholder="Senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+        <button type="submit">Entrar</button>
+        {erro && <p role="alert">{erro}</p>}
+      </form>
+    </main>
   )
 }
