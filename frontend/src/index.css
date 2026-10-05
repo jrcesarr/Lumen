@@ -1,1 +1,115 @@
-body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 960px; padding: 16px; }
+:root {
+  --azul-escuro: #05285b;
+  --azul: #1a5fb4;
+  --fundo: #f4f7fb;
+  --borda: #d6e0ee;
+  --texto: #1c2a3f;
+  --texto-suave: #3d4d66;
+  --vermelho: #b42318;
+  --verde: #1a7f4b;
+  --amarelo: #8a5a00;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: Lexend, system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+h1, h2, h3 { color: var(--azul-escuro); margin: 0 0 12px; }
+h2 { font-size: 24px; }
+h3 { font-size: 18px; }
+
+/* Topo: marca, condominio ativo e saida */
+.topo { background: #fff; border-bottom: 1px solid var(--borda); }
+.topo-conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+.marca { margin: 0 auto 0 0; font-size: 22px; font-weight: 600; color: var(--azul-escuro); }
+.usuario { font-size: 14px; color: var(--texto-suave); }
+
+.conteudo { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+
+/* Formularios viram cartoes */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+input, select {
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--texto);
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 2px;
+}
+
+button {
+  padding: 8px 16px;
+  font: inherit;
+  font-weight: 500;
+  color: #fff;
+  background: var(--azul);
+  border: 1px solid var(--azul);
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover:not(:disabled) { background: var(--azul-escuro); border-color: var(--azul-escuro); }
+button:disabled { opacity: 0.6; cursor: default; }
+button.secundario { color: var(--azul); background: #fff; }
+button.secundario:hover:not(:disabled) { color: #fff; }
+button.perigo { color: var(--vermelho); background: #fff; border-color: var(--vermelho); }
+button.perigo:hover:not(:disabled) { color: #fff; background: var(--vermelho); border-color: var(--vermelho); }
+
+/* Lista de reservas */
+ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+li button:first-of-type { margin-left: auto; }
+
+.status {
+  padding: 2px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 999px;
+  background: var(--fundo);
+}
+.status-aprovada { color: var(--verde); }
+.status-pendente { color: var(--amarelo); }
+.status-recusada, .status-cancelada { color: var(--vermelho); }
+
+[role='alert'] { margin: 0; color: var(--vermelho); }
+
+/* Login */
+.login { display: grid; min-height: 100vh; place-items: center; padding: 16px; }
+.login form { width: 100%; max-width: 360px; margin: 0; }
+.login h1 { text-align: center; font-size: 32px; }

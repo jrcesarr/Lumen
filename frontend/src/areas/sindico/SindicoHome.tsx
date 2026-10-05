@@ -24,7 +24,9 @@ export function SindicoHome() {
           <li key={r.id}>
             {nomeDaArea(r.area_id)}, {periodo(r)}
             <button onClick={() => aprovar.mutate(r.id)}>Aprovar</button>
-            <button onClick={() => pedirRecusa(r.id)}>Recusar</button>
+            <button className="perigo" onClick={() => pedirRecusa(r.id)}>
+              Recusar
+            </button>
           </li>
         ))}
       </ul>
