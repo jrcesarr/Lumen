@@ -47,3 +47,4 @@ Os testes do back conectam como `app_backend`, o mesmo usuario de producao, para
 1. [docs/arquitetura.md](docs/arquitetura.md): diagrama, hospedagem e como uma requisicao atravessa o sistema.
 2. [docs/fluxos-de-dados.md](docs/fluxos-de-dados.md): telas e endpoints de cada funcionalidade.
 3. [docs/decisoes/](docs/decisoes/): por que cada escolha foi feita.
+4. [docs/backup.md](docs/backup.md): backup diario do banco e como restaurar.
