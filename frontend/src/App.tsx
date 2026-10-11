@@ -13,8 +13,12 @@ import type { Vinculo } from './services/api'
 
 /** Manda cada perfil para a sua area. Quem tem mais de um papel vai para o de maior acesso. */
 function Inicio() {
-  const { carregando, condominioId, papeis } = useCondominio()
+  const { me, carregando, condominioId, papeis } = useCondominio()
   if (carregando) return <p>Carregando...</p>
+  if (!me) return <p>Nao foi possivel carregar seus dados. Tente entrar de novo.</p>
+  if (me.vinculos.length === 0) {
+    return <p>Sua conta ainda nao esta vinculada a um condominio. Peca ao sindico para liberar seu acesso.</p>
+  }
   if (!condominioId) return <p>Escolha um condominio acima.</p>
   if (papeis.includes('sindico')) return <Navigate to="/sindico" replace />
   if (papeis.includes('porteiro')) return <Navigate to="/portaria" replace />

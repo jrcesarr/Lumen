@@ -74,6 +74,20 @@ describe('App', () => {
     expect(window.location.pathname).toBe('/sindico')
   })
 
+  it('avisa quando a conta nao tem vinculo com nenhum condominio', async () => {
+    window.history.pushState({}, '', '/')
+    getSession.mockResolvedValue({
+      data: { session: { access_token: 't', user: { email: 'novo@teste.com' } } },
+    })
+    vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async () =>
+        new Response(JSON.stringify({ id: 'u2', nome: 'Novo', email: 'novo@teste.com', vinculos: [] })),
+    )
+    renderizar()
+
+    expect(await screen.findByText(/ainda nao esta vinculada a um condominio/)).toBeTruthy()
+  })
+
   it('volta para a raiz quando nao ha sessao', async () => {
     window.history.pushState({}, '', '/sindico')
     getSession.mockResolvedValue({ data: { session: null } })
