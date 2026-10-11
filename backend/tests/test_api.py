@@ -1,3 +1,6 @@
+import jwt
+
+from tests.conftest import JWT_SECRET
 from tests.factories import criar_cenario, headers, token
 
 
@@ -19,6 +22,16 @@ async def test_token_expirado_401(admin, client):
     c = criar_cenario(admin)
     h = {"Authorization": f"Bearer {token(c.morador_a, minutos=-1)}"}
     assert (await client.get("/api/v1/unidades", headers=h)).status_code == 401
+
+
+async def test_token_sem_exp_ou_sub_401(admin, client):
+    c = criar_cenario(admin)
+    base = {"aud": "authenticated", "iss": "http://supabase.teste/auth/v1"}
+    sem_exp = jwt.encode({**base, "sub": str(c.morador_a)}, JWT_SECRET, algorithm="HS256")
+    sem_sub = jwt.encode({**base, "exp": 4102444800}, JWT_SECRET, algorithm="HS256")
+    for t in (sem_exp, sem_sub):
+        h = {"Authorization": f"Bearer {t}"}
+        assert (await client.get("/api/v1/unidades", headers=h)).status_code == 401
 
 
 async def test_token_com_audience_errada_401(admin, client):

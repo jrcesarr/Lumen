@@ -47,6 +47,8 @@ def decodificar_token(token: str) -> UsuarioAutenticado:
             algorithms=algoritmos,
             audience=settings.jwt_audience,
             issuer=settings.jwt_issuer,
+            # Sem exp o token nunca expiraria; sem sub nao saberiamos de quem e.
+            options={"require": ["exp", "sub"]},
         )
     except jwt.PyJWTError as exc:
         raise NaoAutenticadoError("Token invalido ou expirado") from exc
