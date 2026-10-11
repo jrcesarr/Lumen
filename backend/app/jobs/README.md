@@ -1,5 +1,7 @@
 # Jobs
 
-Tarefas em segundo plano (lembretes, envio da outbox). Usam montar_contexto(), o mesmo carimbo da API, entao a RLS vale aqui tambem.
+Tarefas em segundo plano. Hoje existe o worker da outbox (`python -m app.jobs.worker`, servico `worker` no compose): le os eventos pendentes, chama o handler de cada tipo (`handlers.py`) e tenta de novo com espera crescente se falhar, ate 5 vezes.
 
-Estrutura quando for implementado: `models.py` (tabelas), `schemas.py` (contratos da API), `domain.py` (regras puras, sem banco), `service.py` (casos de uso), `router.py` (endpoints).
+Garantia de entrega: pelo menos uma vez. Os handlers precisam ser idempotentes (use `evento.id`). O worker carimba a transacao com `papel = 'worker'`, que liga a policy `outbox_worker`; todo o resto continua com a RLS por condominio.
+
+Lembretes agendados entram aqui quando forem implementados.
