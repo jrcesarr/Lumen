@@ -189,7 +189,7 @@ cd backend && uv run pytest     # precisa de um Postgres; ver TEST_ADMIN_DATABAS
 cd frontend && npm test
 ```
 
-Hoje: 48 testes no back (isolamento por RLS, endpoints, regras de reserva) e 5 no front. Os testes do back conectam como `app_backend`, o mesmo usuario de producao, para a RLS ser testada de verdade.
+Os testes do back cobrem isolamento por RLS, endpoints e regras de reserva. Eles conectam como `app_backend`, o mesmo usuario de producao, para a RLS ser testada de verdade.
 
 O CI (`.github/workflows/ci.yml`) roda tres jobs a cada push: `backend` (lint e testes), `frontend` (lint, testes e build) e `backup` (faz um dump e restaura num banco limpo).
 
