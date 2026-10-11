@@ -14,13 +14,22 @@ export function MoradorHome() {
 
   return (
     <section>
-      <h2>Minhas reservas</h2>
+      <div className="pagina-titulo">
+        <h2>Minhas reservas</h2>
+        <p>Peca areas comuns e acompanhe a resposta do sindico.</p>
+      </div>
       {unidadeId && <NovaReserva areas={areas} unidadeId={unidadeId} />}
+      <h3 className="secao-titulo">Pedidos</h3>
+      {reservas.length === 0 && <p className="vazio">Voce ainda nao pediu nenhuma reserva.</p>}
       <ul>
         {reservas.map((r) => (
-          <li key={r.id}>
-            {nomeDaArea(r.area_id)}, {periodo(r)}: <strong className={`status status-${r.status}`}>{r.status}</strong>
-            {r.motivo_recusa && <> ({r.motivo_recusa})</>}
+          <li key={r.id} className={`reserva reserva-${r.status}`}>
+            <div className="reserva-info">
+              <span className="reserva-area">{nomeDaArea(r.area_id)}</span>
+              <span className="reserva-periodo">{periodo(r)}</span>
+              {r.motivo_recusa && <span className="reserva-motivo">Motivo: {r.motivo_recusa}</span>}
+            </div>
+            <strong className={`status status-${r.status}`}>{r.status}</strong>
             {(r.status === 'pendente' || r.status === 'aprovada') && (
               <button className="perigo" onClick={() => cancelar.mutate(r.id)}>
                 Cancelar

@@ -25,20 +25,31 @@ export function NovaReserva({ areas, unidadeId }: Props) {
   return (
     <form onSubmit={enviar}>
       <h3>Nova reserva</h3>
-      <select aria-label="Area" value={areaId} onChange={(e) => setAreaId(e.target.value)} required>
-        <option value="">Escolha a area</option>
-        {areas.map((a) => (
-          <option key={a.id} value={a.id}>
-            {a.nome}
-          </option>
-        ))}
-      </select>
-      <input aria-label="Inicio" type="datetime-local" value={inicio} onChange={(e) => setInicio(e.target.value)} required />
-      <input aria-label="Fim" type="datetime-local" value={fim} onChange={(e) => setFim(e.target.value)} required />
-      <button type="submit" disabled={solicitar.isPending}>
-        Pedir reserva
-      </button>
-      {solicitar.isSuccess && <p>Pedido enviado.</p>}
+      <div className="campos">
+        <label className="campo">
+          <span>Area</span>
+          <select value={areaId} onChange={(e) => setAreaId(e.target.value)} required>
+            <option value="">Escolha a area</option>
+            {areas.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.nome}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="campo">
+          <span>Inicio</span>
+          <input type="datetime-local" value={inicio} onChange={(e) => setInicio(e.target.value)} required />
+        </label>
+        <label className="campo">
+          <span>Fim</span>
+          <input type="datetime-local" value={fim} onChange={(e) => setFim(e.target.value)} required />
+        </label>
+        <button type="submit" disabled={solicitar.isPending}>
+          Pedir reserva
+        </button>
+      </div>
+      {solicitar.isSuccess && <p className="sucesso">Pedido enviado.</p>}
       {solicitar.error instanceof ApiError && <p role="alert">{solicitar.error.message}</p>}
     </form>
   )

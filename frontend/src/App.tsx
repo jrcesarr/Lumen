@@ -38,9 +38,17 @@ function AreaLogada({ email }: { email?: string }) {
     <CondominioProvider>
       <header className="topo">
         <div className="topo-conteudo">
-          <span className="marca">Lumen</span>
+          <span className="marca">
+            <span className="marca-icone" aria-hidden="true">L</span>
+            Lumen
+          </span>
           <SeletorCondominio />
-          {email && <span className="usuario">{email}</span>}
+          {email && (
+            <span className="usuario">
+              <span className="avatar" aria-hidden="true">{email[0]}</span>
+              <span className="usuario-email">{email}</span>
+            </span>
+          )}
           <button type="button" className="secundario" onClick={() => supabase.auth.signOut()}>
             Sair
           </button>
