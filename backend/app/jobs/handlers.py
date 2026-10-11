@@ -20,4 +20,5 @@ HANDLERS: dict[str, Handler] = {
     "reserva.solicitada": registrar_no_log,  # avisar o sindico
     "reserva.aprovada": registrar_no_log,  # avisar o morador
     "reserva.recusada": registrar_no_log,  # avisar o morador, com o motivo
+    "reserva.cancelada": registrar_no_log,  # avisar a outra parte (sindico ou morador)
 }

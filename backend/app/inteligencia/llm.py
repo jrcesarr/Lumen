@@ -1,7 +1,8 @@
 """Interface do provedor de LLM.
 
-O provedor ainda nao foi escolhido (ver docs/decisoes/0005). O resto do codigo depende
-so deste Protocol; trocar de provedor = escrever uma nova classe, sem mexer nos contextos.
+Escolha atual: Claude Haiku, com GPT-5.6 Luna como plano B (ver docs/decisoes/0005).
+Ainda nao ha provedor real implementado. O resto do codigo depende so deste Protocol:
+trocar de provedor = escrever uma nova classe, sem mexer nos contextos.
 """
 
 from dataclasses import dataclass

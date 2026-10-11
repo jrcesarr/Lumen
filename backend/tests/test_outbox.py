@@ -49,6 +49,16 @@ async def test_recusar_leva_o_motivo(admin, client):
     assert recusada[0][2]["motivo"] == "Area em manutencao"
 
 
+async def test_cancelar_grava_evento(admin, client):
+    c = criar_cenario(admin)
+    reserva = (await _pedir(client, c, c.morador_a, c.unidade_a101)).json()
+    cancelada = await client.post(
+        f"/api/v1/reservas/{reserva['id']}/cancelar", headers=headers(c.morador_a)
+    )
+    assert cancelada.status_code == 200
+    assert [e[0] for e in _eventos(admin)] == ["reserva.solicitada", "reserva.cancelada"]
+
+
 async def test_pedido_barrado_nao_deixa_evento(admin, client):
     c = criar_cenario(admin)
     r1 = (await _pedir(client, c, c.morador_a, c.unidade_a101, 14, 18)).json()

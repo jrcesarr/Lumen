@@ -39,7 +39,7 @@ Erros sempre voltam como `{detail, request_id}`. Uma regra de negócio violada r
 | Calendário da área | `GET /reservas?de=&ate=&status=aprovada` **(no repo)** | Mostra os horários ocupados |
 | Confirmar pedido | `POST /reservas` **(no repo)** | Cria com status `pendente`. Emite `ReservaSolicitada` → aviso ao síndico |
 | Minhas reservas | `GET /reservas` **(no repo)** | O morador só vê as da própria unidade |
-| Cancelar | `POST /reservas/{id}/cancelar` **(no repo)** | Libera o horário |
+| Cancelar | `POST /reservas/{id}/cancelar` **(no repo)** | Libera o horário. Emite `reserva.cancelada` → aviso à outra parte (síndico ou morador) |
 
 ### Aprovar reservas e gerenciar áreas (Síndico)
 | Tela | Chamada | O que acontece |
@@ -49,7 +49,7 @@ Erros sempre voltam como `{detail, request_id}`. Uma regra de negócio violada r
 | Recusar com motivo | `POST /reservas/{id}/recusar` **(no repo)** | Emite `ReservaRecusada` → WhatsApp ao morador |
 | Configurar áreas | `POST /areas-comuns` **(no repo)** | Nome, capacidade e regras |
 
-> **Eventos (no repo):** `reserva.solicitada`, `reserva.aprovada` e `reserva.recusada` são gravados na tabela `outbox` na mesma transação da reserva. O worker (`python -m app.jobs.worker`) entrega e tenta de novo se falhar; hoje o handler só registra no log, e o push do PWA e o WhatsApp entram com o contexto Comunicação.
+> **Eventos (no repo):** `reserva.solicitada`, `reserva.aprovada`, `reserva.recusada` e `reserva.cancelada` são gravados na tabela `outbox` na mesma transação da reserva. O worker (`python -m app.jobs.worker`) entrega e tenta de novo se falhar; hoje o handler só registra no log, e o push do PWA e o WhatsApp entram com o contexto Comunicação.
 
 ---
 

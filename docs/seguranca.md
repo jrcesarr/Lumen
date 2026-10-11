@@ -24,6 +24,7 @@ Por tras de tudo, um trigger grava a **auditoria** de toda escrita.
 | Usuario envia `X-Condominio-Id` de outro predio | O vinculo e conferido antes de carimbar | Feito |
 | Token falso, expirado, de outro projeto ou sem `exp`/`sub` | Assinatura, `aud`, `iss` e `exp`/`sub` obrigatorios; lista fechada de algoritmos | Feito |
 | Tabelas acessiveis pela API automatica do Supabase (PostgREST) | `app_preparar_tabela` faz `REVOKE` para `anon`, `authenticated` e `service_role`. `usuarios` e `auditoria` ficam protegidas pela RLS, mas `papeis` e `papel_permissoes` (so o catalogo de papeis) ainda nao tem o `REVOKE` | Parcial |
+| Morador le e-mail e telefone dos vizinhos | A policy de `usuarios` so mostra o proprio usuario e, para sindico, atendente e admin, os do condominio ativo; `test_morador_nao_le_dados_dos_vizinhos` | Feito |
 | Alteracao sem rastro | Auditoria por trigger, imutavel para a API | Feito |
 | Duas aprovacoes sobrepostas (corrida) | Exclusion constraint no banco | Feito |
 | Aviso perdido se a API cair | Outbox na mesma transacao + worker com retry | Feito |
@@ -33,9 +34,16 @@ Por tras de tudo, um trigger grava a **auditoria** de toda escrita.
 | Hash de senha no backup (schema `auth`) | Criptografar o dump antes de subir ao bucket e restringir o acesso | Pendente |
 | Forca bruta e excesso de requisicoes | Login: limite do Supabase Auth. API: limite no nginx (abaixo) | Pendente |
 | Dependencia com vulnerabilidade conhecida | `pip-audit`, `npm audit` ou Dependabot no CI | Pendente |
-| Dado pessoal enviado ao LLM | O assistente recebe so pergunta e regimento; o payload da outbox leva ids, sem nome ou telefone | Parcial (LLM ainda nao integrado) |
+| Dado pessoal enviado ao LLM | O assistente (Claude Haiku) recebe so pergunta e regimento; o payload da outbox leva ids, sem nome ou telefone | Parcial (LLM ainda nao integrado) |
 | Webhook de pagamento forjado ou repetido | Validar assinatura e processar de forma idempotente | Futuro (Financeiro) |
 | Upload malicioso | Link assinado com expiracao, tipo e tamanho validados | Futuro (Chamados) |
+
+## Limites conhecidos
+
+- **A RLS confia na aplicacao.** Quem carimba a transacao e o proprio `app_backend`, entao ela protege contra um filtro esquecido, nao contra codigo comprometido rodando como `app_backend`. O papel `worker` da outbox e um exemplo: so vale na tabela `outbox`, mas e carimbado pelo codigo.
+- **Auditoria imutavel, nao infalivel.** A API nao apaga nem altera o log, mas pode inserir linhas com `origem = 'app'` para qualquer condominio.
+- **O worker segura a transacao durante a entrega.** Com handlers lentos (WhatsApp) sera preciso entregar fora da transacao.
+- **Visao consolidada da Lumen:** admin e atendente tem um vinculo por condominio; relatorios da carteira inteira exigem uma decisao propria.
 
 ## Limite de requisicoes no nginx (planejado)
 

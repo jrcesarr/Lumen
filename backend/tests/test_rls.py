@@ -111,3 +111,20 @@ async def test_auditoria_e_imutavel_para_a_api(admin, engine):
     with pytest.raises(DBAPIError, match="permission denied"):
         async with engine.begin() as conn:
             await conn.execute(text("DELETE FROM auditoria"))
+
+
+async def test_morador_nao_le_dados_dos_vizinhos(admin, engine):
+    c = criar_cenario(admin)
+    async with engine.begin() as conn:
+        await _carimbar(conn, condominio_id=c.cond_a, usuario_id=c.morador_a, papel="morador")
+        emails = (await conn.execute(text("SELECT email FROM usuarios"))).scalars().all()
+    assert emails == ["ana@teste.com"]  # so a propria linha
+
+
+async def test_sindico_le_os_usuarios_do_proprio_condominio(admin, engine):
+    c = criar_cenario(admin)
+    async with engine.begin() as conn:
+        await _carimbar(conn, condominio_id=c.cond_a, usuario_id=c.sindico_a, papel="sindico")
+        emails = (await conn.execute(text("SELECT email FROM usuarios"))).scalars().all()
+    # Moradores e sindicos do A (inclui a Marina, que tambem e sindica do B), mas ninguem so do B.
+    assert sorted(emails) == ["ana@teste.com", "marina@teste.com", "sergio@teste.com"]

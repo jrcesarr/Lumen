@@ -38,7 +38,7 @@ Cada contexto tem `models.py` (tabelas), `schemas.py` (contratos), `domain.py` (
 `service.py` (casos de uso) e `router.py` (endpoints). Um contexto nao importa o `service` de outro sem necessidade;
 quando precisar reagir a algo, usa eventos via tabela outbox: `shared/outbox.py` grava o evento na mesma transacao
 do fato e o worker (`jobs/`) entrega depois, com retry ([ADR 0010](decisoes/0010-outbox-para-eventos.md)).
-Hoje as Reservas publicam `reserva.solicitada`, `reserva.aprovada` e `reserva.recusada`; os handlers so registram no log
+Hoje as Reservas publicam `reserva.solicitada`, `reserva.aprovada`, `reserva.recusada` e `reserva.cancelada`; os handlers so registram no log
 ate o contexto Comunicacao enviar push e WhatsApp.
 
 ## Tabela nova, protegida em uma linha

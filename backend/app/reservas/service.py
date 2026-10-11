@@ -184,4 +184,6 @@ async def cancelar(ctx: RequestContext, reserva_id: UUID) -> Reserva:
     reserva.status = Status.CANCELADA
     reserva.cancelada_em = agora
     await _gravar(ctx)
+    # Avisa a outra parte: o sindico se o morador cancelou, o morador se foi o sindico.
+    _evento(ctx, "reserva.cancelada", reserva)
     return reserva
