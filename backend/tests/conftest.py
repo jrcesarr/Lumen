@@ -43,6 +43,7 @@ os.environ["SUPABASE_JWT_SECRET"] = JWT_SECRET
 os.environ["SUPABASE_URL"] = "http://supabase.teste"
 
 TABELAS = [
+    "outbox",
     "reservas",
     "vinculos",
     "areas_comuns",

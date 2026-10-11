@@ -29,10 +29,10 @@ A Lumen e dividida em 8 contextos (DDD). Hoje:
 |---|---|---|
 | Identidade | pronto | usuarios, vinculos (quem, onde, qual papel), `GET /me` |
 | Carteira | pronto | condominios, unidades, areas comuns |
-| Reservas | pronto | solicitar, aprovar, recusar e cancelar reserva de area comum, sem sobreposicao de horario |
+| Reservas | pronto | solicitar, aprovar, recusar e cancelar reserva de area comum, sem sobreposicao de horario; cada decisao grava um evento na outbox |
 | Chamados | esqueleto | pasta e README do contexto |
 | Portaria | esqueleto | idem |
-| Comunicacao | esqueleto | idem (outbox e push entram aqui) |
+| Comunicacao | esqueleto | idem (o push do PWA e o WhatsApp entram aqui, como handlers da outbox) |
 | Financeiro | esqueleto | idem |
 | Inteligencia | esqueleto | interface `ProvedorLLM` com provedor falso; o provedor real ainda nao foi escolhido |
 
@@ -76,7 +76,8 @@ backend/    API em FastAPI, um pacote por contexto (DDD)
   app/identidade/  usuarios e vinculos            (pronto)
   app/carteira/    condominios, unidades, areas   (pronto)
   app/reservas/    reservas de areas comuns       (pronto)
-  app/chamados, portaria, comunicacao, financeiro, inteligencia, jobs
+  app/jobs/        worker da outbox (python -m app.jobs.worker)
+  app/chamados, portaria, comunicacao, financeiro, inteligencia
   alembic/         migrations
   tests/           pytest (RLS, API, regras de dominio)
 frontend/   React + Vite + TypeScript, uma area por perfil

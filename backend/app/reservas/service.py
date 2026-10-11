@@ -23,6 +23,7 @@ from app.shared.errors import (
     PermissaoNegadaError,
 )
 from app.shared.ids import uuid7
+from app.shared.outbox import publicar
 
 HORARIO_OCUPADO = "Ja existe uma reserva aprovada nesse horario para esta area"
 
@@ -53,6 +54,23 @@ async def _gravar(ctx: RequestContext) -> None:
         if getattr(erro.orig, "sqlstate", None) == "23P01":
             raise ConflitoError(HORARIO_OCUPADO) from erro
         raise
+
+
+def _evento(ctx: RequestContext, tipo: str, reserva: Reserva, **extra: str) -> None:
+    """Grava o evento na outbox, na mesma transacao da mudanca da reserva."""
+    publicar(
+        ctx,
+        tipo,
+        {
+            "reserva_id": str(reserva.id),
+            "area_id": str(reserva.area_id),
+            "unidade_id": str(reserva.unidade_id),
+            "solicitada_por": str(reserva.solicitada_por),
+            "inicio": reserva.inicio.isoformat(),
+            "fim": reserva.fim.isoformat(),
+            **extra,
+        },
+    )
 
 
 async def solicitar(ctx: RequestContext, dados: ReservaIn) -> Reserva:
@@ -88,6 +106,9 @@ async def solicitar(ctx: RequestContext, dados: ReservaIn) -> Reserva:
         raise ConflitoError(HORARIO_OCUPADO)
     ctx.session.add(reserva)
     await _gravar(ctx)
+    _evento(ctx, "reserva.solicitada", reserva)
+    if status is Status.APROVADA:  # area sem aprovacao: ja nasce aprovada
+        _evento(ctx, "reserva.aprovada", reserva)
     return reserva
 
 
@@ -135,6 +156,7 @@ async def aprovar(ctx: RequestContext, reserva_id: UUID) -> Reserva:
     reserva.decidida_por = ctx.usuario_id
     reserva.decidida_em = agora
     await _gravar(ctx)
+    _evento(ctx, "reserva.aprovada", reserva)
     return reserva
 
 
@@ -147,6 +169,7 @@ async def recusar(ctx: RequestContext, reserva_id: UUID, motivo: str) -> Reserva
     reserva.decidida_por = ctx.usuario_id
     reserva.decidida_em = agora
     await _gravar(ctx)
+    _evento(ctx, "reserva.recusada", reserva, motivo=reserva.motivo_recusa)
     return reserva
 
 

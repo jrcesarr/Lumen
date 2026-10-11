@@ -68,7 +68,7 @@ async def usuario_atual(
 UsuarioAtualDep = Annotated[UsuarioAutenticado, Depends(usuario_atual)]
 
 
-async def _carimbar(session: AsyncSession, **gucs: str) -> None:
+async def carimbar(session: AsyncSession, **gucs: str) -> None:
     # set_config(..., true) vale so ate o fim da transacao (equivale a SET LOCAL),
     # o que e seguro com pooler em modo transaction.
     partes = ", ".join(f"set_config('app.{nome}', :{nome}, true)" for nome in gucs)
@@ -85,7 +85,7 @@ async def montar_contexto(
     """Nucleo do contexto, sem depender do FastAPI (reaproveitavel pelos jobs)."""
     async with session.begin():
         # 1) Carimba so o usuario: a policy de vinculos deixa cada um ler os proprios.
-        await _carimbar(session, usuario_id=str(usuario_id), request_id=request_id)
+        await carimbar(session, usuario_id=str(usuario_id), request_id=request_id)
         linhas = (
             await session.execute(
                 text(
@@ -124,7 +124,7 @@ async def montar_contexto(
                 logger.warning("Permissao fora do catalogo", extra={"permissao": linha.permissao})
 
         # 2) Carimba o condominio ativo e os papeis (usados pela RLS e pela auditoria).
-        await _carimbar(
+        await carimbar(
             session,
             condominio_id=str(condominio_id),
             papel=",".join(sorted(papeis)),
@@ -173,7 +173,7 @@ async def get_sessao_do_usuario(
     Usada apenas por GET /me, que lista os vinculos para o seletor de condominio.
     """
     async with session.begin():
-        await _carimbar(session, usuario_id=usuario.id, request_id=request.state.request_id)
+        await carimbar(session, usuario_id=usuario.id, request_id=request.state.request_id)
         yield session, UUID(usuario.id)
 
 

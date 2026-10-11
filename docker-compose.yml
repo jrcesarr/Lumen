@@ -32,6 +32,14 @@ services:
       DATABASE_URL: postgresql+asyncpg://app_backend:app_backend@db:5432/lumen
     ports: ["8000:8000"]
 
+  # Entrega os eventos da outbox (hoje so registra no log).
+  worker:
+    build: ./backend
+    depends_on: { migrate: { condition: service_completed_successfully } }
+    environment:
+      DATABASE_URL: postgresql+asyncpg://app_backend:app_backend@db:5432/lumen
+    command: uv run --no-dev python -m app.jobs.worker
+
   web:
     image: node:22
     working_dir: /web

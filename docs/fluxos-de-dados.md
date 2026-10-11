@@ -49,6 +49,8 @@ Erros sempre voltam como `{detail, request_id}`. Uma regra de negócio violada r
 | Recusar com motivo | `POST /reservas/{id}/recusar` **(no repo)** | Emite `ReservaRecusada` → WhatsApp ao morador |
 | Configurar áreas | `POST /areas-comuns` **(no repo)** | Nome, capacidade e regras |
 
+> **Eventos (no repo):** `reserva.solicitada`, `reserva.aprovada` e `reserva.recusada` são gravados na tabela `outbox` na mesma transação da reserva. O worker (`python -m app.jobs.worker`) entrega e tenta de novo se falhar; hoje o handler só registra no log, e o push do PWA e o WhatsApp entram com o contexto Comunicação.
+
 ---
 
 ## Chamados (fases 1 e 2)
