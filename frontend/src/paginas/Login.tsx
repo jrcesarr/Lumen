@@ -15,9 +15,19 @@ export function Login() {
   return (
     <main className="login">
       <form onSubmit={entrar}>
-        <h1>Lumen</h1>
-        <input placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input placeholder="Senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+        <div className="login-cabecalho">
+          <span className="marca-icone" aria-hidden="true">L</span>
+          <h1>Lumen</h1>
+          <p>Administradora de Condominios</p>
+        </div>
+        <label className="campo">
+          <span>E-mail</span>
+          <input placeholder="voce@exemplo.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </label>
+        <label className="campo">
+          <span>Senha</span>
+          <input placeholder="Sua senha" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+        </label>
         <button type="submit">Entrar</button>
         {erro && <p role="alert">{erro}</p>}
       </form>
