@@ -27,16 +27,27 @@ A Lumen e dividida em 8 contextos (DDD). Hoje:
 
 | Contexto | Status | O que tem |
 |---|---|---|
-| Identidade | pronto | usuarios, vinculos (quem, onde, qual papel), `GET /me` |
+| Identidade | pronto | usuarios, vinculos (quem, onde, qual papel), `GET /me`; e-mail e telefone so aparecem para o proprio usuario e para quem gerencia o condominio |
 | Carteira | pronto | condominios, unidades, areas comuns |
-| Reservas | pronto | solicitar, aprovar, recusar e cancelar reserva de area comum, sem sobreposicao de horario; cada decisao grava um evento na outbox |
+| Reservas | pronto | solicitar, aprovar, recusar e cancelar reserva de area comum, sem sobreposicao de horario; solicitar, aprovar, recusar e cancelar gravam um evento na outbox |
 | Chamados | esqueleto | pasta e README do contexto |
 | Portaria | esqueleto | idem |
 | Comunicacao | esqueleto | idem (o push do PWA e o WhatsApp entram aqui, como handlers da outbox) |
 | Financeiro | esqueleto | idem |
-| Inteligencia | esqueleto | interface `ProvedorLLM` com provedor falso; o provedor real ainda nao foi escolhido |
+| Inteligencia | esqueleto | interface `ProvedorLLM` com provedor falso. Escolhido: Claude Haiku (plano B: GPT-5.6 Luna), ainda nao implementado ([ADR 0005](docs/decisoes/0005-llm-trocavel.md)) |
 
 Front: login, seletor de condominio, e as telas de morador (nova reserva, minhas reservas) e de sindico (aprovar e recusar). A portaria ainda e uma tela vazia.
+
+### Planejado, ainda nao feito
+
+Estas decisoes estao nos documentos, mas **nao tem codigo**:
+
+- **PWA e push:** sem manifest nem service worker. O push do PWA e o WhatsApp entram como handlers do worker da outbox, com o contexto Comunicacao.
+- **Producao:** `infra/` de producao (nginx, TLS, compose de producao, limite de requisicoes) nao existe; so ha o backup. Ver [docs/seguranca.md](docs/seguranca.md).
+- **MinIO:** sobe no compose, mas nenhuma funcionalidade usa (fotos de chamados e notas fiscais virao depois).
+- **Provedor de LLM real:** so existe a interface e o provedor falso.
+- **Visao consolidada da Lumen:** hoje o papel de admin ou atendente e um vinculo por condominio, e a RLS enxerga um condominio por vez. Relatorios da carteira dos 40 condominios pedem uma decisao propria.
+- **Contextos:** Chamados, Portaria, Comunicacao e Financeiro; convite de usuarios e CRUD de condominios e unidades.
 
 ## Stack
 
