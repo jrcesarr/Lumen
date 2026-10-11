@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { useQueryClient } from '@tanstack/react-query'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { MoradorHome } from './areas/morador/MoradorHome'
 import { PortariaHome } from './areas/portaria/PortariaHome'
@@ -8,6 +9,7 @@ import { SeletorCondominio } from './componentes/SeletorCondominio'
 import { CondominioProvider, useCondominio } from './contexto/CondominioContext'
 import { supabase } from './lib/supabase'
 import { Login } from './paginas/Login'
+import type { Vinculo } from './services/api'
 
 /** Manda cada perfil para a sua area. Quem tem mais de um papel vai para o de maior acesso. */
 function Inicio() {
@@ -16,7 +18,15 @@ function Inicio() {
   if (!condominioId) return <p>Escolha um condominio acima.</p>
   if (papeis.includes('sindico')) return <Navigate to="/sindico" replace />
   if (papeis.includes('porteiro')) return <Navigate to="/portaria" replace />
-  return <Navigate to="/morador" replace />
+  if (papeis.includes('morador')) return <Navigate to="/morador" replace />
+  return <p>Seu perfil ainda nao tem uma area no app.</p>
+}
+
+/** A URL nao da acesso: quem nao tem o papel da area volta para o inicio. */
+function SoPara({ papel, children }: { papel: Vinculo['papel']; children: ReactNode }) {
+  const { carregando, papeis } = useCondominio()
+  if (carregando) return <p>Carregando...</p>
+  return papeis.includes(papel) ? children : <Navigate to="/" replace />
 }
 
 function AreaLogada({ email }: { email?: string }) {
@@ -35,9 +45,9 @@ function AreaLogada({ email }: { email?: string }) {
       <main className="conteudo">
         <Routes>
           <Route path="/" element={<Inicio />} />
-          <Route path="/morador/*" element={<MoradorHome />} />
-          <Route path="/sindico/*" element={<SindicoHome />} />
-          <Route path="/portaria/*" element={<PortariaHome />} />
+          <Route path="/morador/*" element={<SoPara papel="morador"><MoradorHome /></SoPara>} />
+          <Route path="/sindico/*" element={<SoPara papel="sindico"><SindicoHome /></SoPara>} />
+          <Route path="/portaria/*" element={<SoPara papel="porteiro"><PortariaHome /></SoPara>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
@@ -46,13 +56,30 @@ function AreaLogada({ email }: { email?: string }) {
 }
 
 export default function App() {
+  const queryClient = useQueryClient()
   const [sessao, setSessao] = useState<Session | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSessao(data.session))
-    const { data } = supabase.auth.onAuthStateChange((_evento, s) => setSessao(s))
+    const { data } = supabase.auth.onAuthStateChange((evento, s) => {
+      // O cache e do usuario que saiu; o proximo login nao pode ver os dados dele.
+      if (evento === 'SIGNED_OUT') queryClient.clear()
+      setSessao(s)
+    })
     return () => data.subscription.unsubscribe()
-  }, [])
+  }, [queryClient])
 
-  return <BrowserRouter>{sessao ? <AreaLogada email={sessao.user.email} /> : <Login />}</BrowserRouter>
+  return (
+    <BrowserRouter>
+      {sessao ? (
+        <AreaLogada email={sessao.user.email} />
+      ) : (
+        // Sem sessao, qualquer URL volta para a raiz: quem entrar depois e mandado para a propria area.
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      )}
+    </BrowserRouter>
+  )
 }
