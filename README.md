@@ -224,4 +224,5 @@ O Supabase Free nao oferece backup para download. Por isso `infra/backup/backup.
 2. [docs/fluxos-de-dados.md](docs/fluxos-de-dados.md): telas e endpoints de cada funcionalidade.
 3. [docs/decisoes/](docs/decisoes/): por que cada escolha foi feita (9 ADRs).
 4. [docs/backup.md](docs/backup.md): backup diario do banco e como restaurar.
-5. [docs/rodando-localmente.md](docs/rodando-localmente.md): como entrar na plataforma na sua maquina.
+5. [docs/seguranca.md](docs/seguranca.md): ameacas, defesas e o que ainda esta pendente.
+6. [docs/rodando-localmente.md](docs/rodando-localmente.md): como entrar na plataforma na sua maquina.
