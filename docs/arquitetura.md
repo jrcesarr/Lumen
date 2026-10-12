@@ -8,7 +8,7 @@
 |---|---|---|
 | Front (React PWA) | Servido pelo nginx da VM | Build estático; um servidor a menos |
 | API FastAPI e worker | VM Oracle Always Free, região São Paulo, conta Pay As You Go, Docker Compose | Custo zero sem o desligamento por ociosidade da conta só gratuita; mesmo modelo da SmartFit |
-| MinIO (arquivos) | Mesma VM | Fotos, NFs e regimentos; acesso por link assinado |
+| Oracle Object Storage (arquivos e backups) | Oracle Cloud, fora da VM, regiao Sao Paulo | Fotos, NFs e regimentos em `lumen-arquivos` (versionado); dumps em `lumen-backup`. API S3, acesso por link assinado ([ADR 0011](decisoes/0011-object-storage-da-oracle.md)) |
 | PostgreSQL e Auth | Supabase Free, região São Paulo | Dados no Brasil (LGPD) e login pronto. Sem backup no Free: `pg_dump` diário no Object Storage da Oracle ([backup.md](backup.md)). Pro (US$ 25/mês) ao passar de 400 MB ou na fase 2 |
 | WhatsApp, Asaas, LLM | SaaS externos | Chamados só pela API ou pelo worker, nunca pelo front |
 
