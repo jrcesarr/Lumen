@@ -47,13 +47,16 @@ services:
     command: sh -c "npm ci && npm run dev -- --host"
     ports: ["5173:5173"]
 
-  # Armazenamento de arquivos (fotos de chamados, comprovantes) compativel com S3.
-  minio:
-    image: minio/minio
+  # S3 local SO PARA DESENVOLVIMENTO (fotos de chamados, comprovantes). Em producao os arquivos
+  # ficam no Oracle Object Storage (ADR 0011). A imagem fica FIXA numa versao porque a edicao
+  # comunitaria do MinIO nao recebe mais correcoes; nao use esta imagem fora do computador do dev.
+  # Quando a primeira funcionalidade de arquivos entrar, trocar por um S3 mantido (Garage ou SeaweedFS).
+  s3-dev:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
     command: server /data --console-address :9001
     ports: ["9000:9000", "9001:9001"]
-    volumes: [minio:/data]
+    volumes: [s3-dev:/data]
 
 volumes:
   db:
-  minio:
+  s3-dev:

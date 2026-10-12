@@ -58,7 +58,7 @@ Erros sempre voltam como `{detail, request_id}`. Uma regra de negócio violada r
 ### Abrir chamado e acompanhar (Morador)
 | Tela | Chamada | O que acontece |
 |---|---|---|
-| Novo chamado | `POST /arquivos/upload-url` → envio direto ao MinIO | A API gera um link assinado e a foto vai direto para o MinIO |
+| Novo chamado | `POST /arquivos/upload-url` → envio direto ao Object Storage | A API gera um link assinado e a foto vai direto para o bucket `lumen-arquivos` |
 | | `POST /chamados` | Cria o chamado `aberto` com a chave da foto. Emite `ChamadoAberto` → aviso ao síndico |
 | Meus chamados | `GET /chamados` | Status e histórico |
 | Avaliar | `POST /chamados/{id}/avaliacao` | Nota ao prestador depois de concluído |

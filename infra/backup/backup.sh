@@ -2,10 +2,10 @@
 # Backup diario do banco. O Supabase Free nao guarda backups, entao este script faz o papel.
 #
 #   BACKUP_DATABASE_URL  string de conexao do Postgres do Supabase (obrigatoria)
-#   BACKUP_DESTINO       pasta local ou remote do rclone, ex.: oci:lumen-backups (obrigatoria)
+#   BACKUP_DESTINO       pasta local ou remote do rclone, ex.: oci:lumen-backup (obrigatoria)
 #   BACKUP_SCHEMAS       schemas copiados (padrao: "public auth"; o auth guarda os logins)
 #   BACKUP_EXTENSOES     extensoes que o schema usa (padrao: btree_gist, da exclusion constraint das reservas)
-#   BACKUP_DIAS_DIARIOS  quantos dias guardar os diarios (padrao: 7)
+#   BACKUP_DIAS_DIARIOS  quantos dias guardar os diarios (padrao: 14)
 #   BACKUP_DIAS_SEMANAIS quantos dias guardar os semanais, copiados aos domingos (padrao: 28)
 set -euo pipefail
 
@@ -13,7 +13,7 @@ set -euo pipefail
 : "${BACKUP_DESTINO:?defina BACKUP_DESTINO (pasta local ou remote do rclone)}"
 schemas="${BACKUP_SCHEMAS:-public auth}"
 extensoes="${BACKUP_EXTENSOES:-btree_gist}"
-dias_diarios="${BACKUP_DIAS_DIARIOS:-7}"
+dias_diarios="${BACKUP_DIAS_DIARIOS:-14}"
 dias_semanais="${BACKUP_DIAS_SEMANAIS:-28}"
 
 tmp="$(mktemp -d)"

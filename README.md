@@ -44,7 +44,7 @@ Estas decisoes estao nos documentos, mas **nao tem codigo**:
 
 - **PWA e push:** sem manifest nem service worker. O push do PWA e o WhatsApp entram como handlers do worker da outbox, com o contexto Comunicacao.
 - **Producao:** `infra/` de producao (nginx, TLS, compose de producao, limite de requisicoes) nao existe; so ha o backup. Ver [docs/seguranca.md](docs/seguranca.md).
-- **MinIO:** sobe no compose, mas nenhuma funcionalidade usa (fotos de chamados e notas fiscais virao depois).
+- **Arquivos (Oracle Object Storage):** a decisao esta no [ADR 0011](docs/decisoes/0011-object-storage-da-oracle.md), mas nenhuma funcionalidade grava arquivo ainda (fotos de chamados e notas fiscais virao depois). No compose de desenvolvimento ha um S3 local so para testar.
 - **Provedor de LLM real:** so existe a interface e o provedor falso.
 - **Visao consolidada da Lumen:** hoje o papel de admin ou atendente e um vinculo por condominio, e a RLS enxerga um condominio por vez. Relatorios da carteira dos 40 condominios pedem uma decisao propria.
 - **Contextos:** Chamados, Portaria, Comunicacao e Financeiro; convite de usuarios e CRUD de condominios e unidades.
@@ -56,7 +56,7 @@ Estas decisoes estao nos documentos, mas **nao tem codigo**:
 | Back | Python 3.11+, FastAPI, SQLAlchemy assincrono, Alembic (migrations em SQL explicito), Pydantic |
 | Front | React 19, Vite, TypeScript, React Router, TanStack Query |
 | Banco e login | PostgreSQL 16 e Supabase Auth (JWT) |
-| Arquivos | MinIO (compativel com S3) |
+| Arquivos | Oracle Object Storage (API compativel com S3); no dev, um S3 local |
 | Hospedagem | VM Oracle Always Free (Sao Paulo) com Docker Compose e nginx; Supabase Free |
 | Testes | pytest (back), Vitest (front) |
 | CI | GitHub Actions |
@@ -109,7 +109,7 @@ Pre-requisitos: Docker. Para rodar sem Docker: Python com [uv](https://docs.astr
 docker compose up
 ```
 
-Sobe banco, migrations, API (`:8000`), front (`:5173`) e MinIO (`:9001`, console). A documentacao interativa da API fica em `http://localhost:8000/docs`.
+Sobe banco, migrations, API (`:8000`), front (`:5173`) e um S3 local de desenvolvimento (`:9001`, console). A documentacao interativa da API fica em `http://localhost:8000/docs`.
 
 Sem Docker:
 
@@ -233,7 +233,7 @@ O Supabase Free nao oferece backup para download. Por isso `infra/backup/backup.
 
 1. [docs/arquitetura.md](docs/arquitetura.md): diagrama, hospedagem e como uma requisicao atravessa o sistema.
 2. [docs/fluxos-de-dados.md](docs/fluxos-de-dados.md): telas e endpoints de cada funcionalidade.
-3. [docs/decisoes/](docs/decisoes/): por que cada escolha foi feita (9 ADRs).
+3. [docs/decisoes/](docs/decisoes/): por que cada escolha foi feita (11 ADRs).
 4. [docs/backup.md](docs/backup.md): backup diario do banco e como restaurar.
 5. [docs/seguranca.md](docs/seguranca.md): ameacas, defesas e o que ainda esta pendente.
 6. [docs/rodando-localmente.md](docs/rodando-localmente.md): como entrar na plataforma na sua maquina.
